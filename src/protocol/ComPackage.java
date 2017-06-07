@@ -23,12 +23,14 @@ public class ComPackage implements Cloneable {
 	public static final byte FC_STATE_ERASE = (byte)0x1;
 	public static final byte FC_STATE_UPGRADE = (byte)0x2;
 	public static final byte FC_STATE_REFUSED = (byte)0x3;
+	public static final byte FC_STATE_JUMPFAILED = (byte)0x4;
 
 	public static final byte FC_REFUSED_BUSY = (byte)0x0;
 	public static final byte FC_REFUSED_VERSION_OLD = (byte)0x1;
 	public static final byte FC_REFUSED_OVER_SIZE = (byte)0x2;
 	public static final byte FC_REFUSED_TYPE_ERROR = (byte)0x3;
-	public static final byte FC_REFUSED_UNKNOWERROR = (byte)0x4;
+	public static final byte FC_REFUSED_LOW_VOLTAGE = (byte)0x4;
+	public static final byte FC_REFUSED_UNKNOWERROR = (byte)0x5;
 
 	public byte stx1;
 	public byte stx2;
