@@ -59,7 +59,7 @@ public class UpgradeTool extends JFrame {
 	private static final long serialVersionUID = 2L;
 	private static final byte Major = 1;
 	private static final byte Minor = 0;
-	private static final byte FixNumber = 0;
+	private static final byte FixNumber = 1;
 
 	private static boolean UpgradeStartFlag = false;
 	private File srcFile = null;
@@ -269,6 +269,8 @@ public class UpgradeTool extends JFrame {
 		}
 	};
 //private static long TimeMes_M = 0;
+	private static boolean ErrorShownFlag = false;
+	private static boolean RefusedShownFlag = false;
 	private class SerialListener implements SerialPortEventListener {
 	    public void serialEvent(SerialPortEvent serialPortEvent) {
 	        switch (serialPortEvent.getEventType()) {
@@ -315,6 +317,8 @@ public class UpgradeTool extends JFrame {
 										if(rxData.type == ComPackage.TYPE_UPGRADE_FC_ACK) {
 											switch(rxData.rData[0]) {
 												case ComPackage.FC_STATE_ERASE:
+													ErrorShownFlag = false;
+													RefusedShownFlag = false;
 													if(UpgradeStep == UpgradeSendRequest) {
 														debug_info.setText("Erasing flash.");
 														txProg.setValue(rxData.rData[1]);
@@ -322,6 +326,8 @@ public class UpgradeTool extends JFrame {
 													}
 												break;
 												case ComPackage.FC_STATE_UPGRADE:
+													ErrorShownFlag = false;
+													RefusedShownFlag = false;
 													int rdID = rxData.readoutInteger(1);
 													if(rdID >= PackageIndex) {
 														UpdateBufferFlag = true;
@@ -340,24 +346,36 @@ public class UpgradeTool extends JFrame {
 												case ComPackage.FC_STATE_REFUSED:
 													if(UpgradeStep == UpgradeSendRequest) {
 														ExitUpgrade();
-														switch(rxData.rData[1]) {
-															case ComPackage.FC_REFUSED_BUSY:
-																JOptionPane.showMessageDialog(null, "fc busy.", "fc refused!", JOptionPane.ERROR_MESSAGE);
-															break;
-															case ComPackage.FC_REFUSED_VERSION_OLD:
-																JOptionPane.showMessageDialog(null, "version too old.", "fc refused!", JOptionPane.ERROR_MESSAGE);
-															break;
-															case ComPackage.FC_REFUSED_OVER_SIZE:
-																JOptionPane.showMessageDialog(null, "over size.", "fc refused!", JOptionPane.ERROR_MESSAGE);
-															break;
-															case ComPackage.FC_REFUSED_TYPE_ERROR:
-																JOptionPane.showMessageDialog(null, "type error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
-															break;
-															case ComPackage.FC_REFUSED_UNKNOWERROR:
-															default:
-																JOptionPane.showMessageDialog(null, "fc unkonw error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
-															break;
+														if(RefusedShownFlag == false) {
+															RefusedShownFlag = true;
+															switch(rxData.rData[1]) {
+																case ComPackage.FC_REFUSED_BUSY:
+																	JOptionPane.showMessageDialog(null, "fc busy.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																break;
+																case ComPackage.FC_REFUSED_VERSION_OLD:
+																	JOptionPane.showMessageDialog(null, "version too old.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																break;
+																case ComPackage.FC_REFUSED_OVER_SIZE:
+																	JOptionPane.showMessageDialog(null, "over size.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																break;
+																case ComPackage.FC_REFUSED_TYPE_ERROR:
+																	JOptionPane.showMessageDialog(null, "type error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																break;
+																case ComPackage.FC_REFUSED_LOW_VOLTAGE:
+																	JOptionPane.showMessageDialog(null, "low voltage.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																break;
+																case ComPackage.FC_REFUSED_UNKNOWERROR:
+																default:
+																	JOptionPane.showMessageDialog(null, "fc unkonw error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																break;
+															}
 														}
+													}
+												break;
+												case ComPackage.FC_STATE_JUMPFAILED:
+													if(ErrorShownFlag == false) {
+														ErrorShownFlag = true;
+														JOptionPane.showMessageDialog(null, "fc jump to application failed!", "fc error!", JOptionPane.ERROR_MESSAGE);
 													}
 												break;
 												default:
