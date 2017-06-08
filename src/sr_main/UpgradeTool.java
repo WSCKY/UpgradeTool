@@ -69,7 +69,7 @@ public class UpgradeTool extends JFrame {
 
 	private SerialPort serialPort = null;
 	private List<String> srList = null;
-	private final String[] srBaudRate = {"9600", "57600", "115200"};
+	private final String[] srBaudRate = {"9600", "57600", "115200", "230400"};
 
 	private JPanel hPanel = new JPanel();
 	private JComboBox<String> srSelect = new JComboBox<String>();
