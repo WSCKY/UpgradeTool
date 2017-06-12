@@ -18,6 +18,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -329,7 +333,7 @@ public class UpgradeTool extends JFrame {
 													ErrorShownFlag = false;
 													RefusedShownFlag = false;
 													int rdID = rxData.readoutInteger(1);
-													if(rdID >= PackageIndex) {
+													if(rdID == PackageIndex) {//dangerous
 														UpdateBufferFlag = true;
 														debug_info.setText("got file data:   " + rdID + "/" + NumberOfPackage);
 														if(NumberOfPackage != 0) {
@@ -448,7 +452,7 @@ public class UpgradeTool extends JFrame {
 				} catch (InterruptedException e) {
 					ExitUpgrade();
 					String err = ExceptionWriter.getErrorInfoFromException(e);
-					JOptionPane.showMessageDialog(null, err, "error!", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, err, "error!", JOptionPane.ERROR_MESSAGE);
 					System.exit(0);
 				}
 			}
@@ -474,71 +478,80 @@ public class UpgradeTool extends JFrame {
 		public void run() {
 			while(true) {
 				if(UpgradeStartFlag == true) {
-					if(UpdateBufferFlag == true) {
-						switch(UpgradeStep) {
-							case UpgradeSendRequest:
-								//tx data
-								int DataCnt = 0;
-								int FileSize = (int)srcFile.length();
-								NumberOfPackage = (FileSize / ComPackage.FILE_DATA_CACHE) + 1;
-								FileHeaderData = new byte[FileHeader.HeaderSize];
-								try {
-									fs.read(FileHeaderData);
-								} catch (IOException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-								FileHeader fh = new FileHeader(FileHeaderData);
-								txData.type = ComPackage.TYPE_UPGRADE_REQUEST;
-								txData.addByte(ComPackage.FW_TYPE_FC, DataCnt); DataCnt += 1;
-								txData.addInteger(NumberOfPackage, DataCnt); DataCnt += 4;
-								txData.addInteger(FileSize, DataCnt); DataCnt += 4;
-								txData.addCharacter(fh.getVersion(), DataCnt); DataCnt += 2;
-								txData.addByte(fh.getType(), DataCnt); DataCnt += 1;
-								txData.addInteger(fh.getCRC(), DataCnt); DataCnt += 4;
-								txData.setLength(DataCnt + 2);
-								SendBuffer = txData.getSendBuffer();
-								SendTimeStart = System.currentTimeMillis();
-								SendTimeOut = 500;
-								EnableSendFlag = true;
-							break;
-							case UpgradeSendFileData:
-								try {
-									int nRead = 0;
-									if((nRead = fs.read(fileread)) != -1) {
-										PackageIndex ++;//package index, count from 1.
-										txData.type = ComPackage.TYPE_UPGRADE_DATA;
-										txData.addInteger(PackageIndex, 0);
-										txData.addByte((byte)nRead, 4);
-										txData.addBytes(fileread, ComPackage.FILE_DATA_CACHE, 5);
-										txData.setLength(ComPackage.FILE_DATA_CACHE + 7);
-										SendBuffer = txData.getSendBuffer();//update.
+					synchronized(new String("")) {
+						if(UpdateBufferFlag == true) {
+							switch(UpgradeStep) {
+								case UpgradeSendRequest:
+									//tx data
+									int DataCnt = 0;
+									int FileSize = (int)srcFile.length();
+									NumberOfPackage = ((FileSize - FileHeader.HeaderSize) / ComPackage.FILE_DATA_CACHE) + 1;
+									FileHeaderData = new byte[FileHeader.HeaderSize];
+									try {
+										fs.read(FileHeaderData);
+									} catch (IOException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									FileHeader fh = new FileHeader(FileHeaderData);
+									if(FileHeader.IsValid(fh)) {
+										txData.type = ComPackage.TYPE_UPGRADE_REQUEST;
+										txData.addByte(ComPackage.FW_TYPE_FC, DataCnt); DataCnt += 1;
+										txData.addInteger(NumberOfPackage, DataCnt); DataCnt += 4;
+										txData.addInteger(FileSize, DataCnt); DataCnt += 4;
+										txData.addCharacter(fh.getVersion(), DataCnt); DataCnt += 2;
+										txData.addByte(fh.getType(), DataCnt); DataCnt += 1;
+										txData.addInteger(fh.getCRC(), DataCnt); DataCnt += 4;
+										txData.setLength(DataCnt + 2);
+										SendBuffer = txData.getSendBuffer();
 										SendTimeStart = System.currentTimeMillis();
-										SendTimeOut = 50;
+										SendTimeOut = 500;
 										EnableSendFlag = true;
 									} else {
-//										ExitUpgrade();
 										NeedExit = true;
-										JOptionPane.showMessageDialog(null, "Upgrade Success!", "info", JOptionPane.INFORMATION_MESSAGE);
+										srcFile = null;
+										src_txt.setText("");
+										JOptionPane.showMessageDialog(null, "invalid pnx file!", "error!", JOptionPane.ERROR_MESSAGE);
 									}
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-									JOptionPane.showMessageDialog(null, "Excepte while read file!", "error!", JOptionPane.ERROR_MESSAGE);
-									//need exit!
-								}
-							break;
-							default:
-								SendTimeStart = System.currentTimeMillis();
-								SendTimeOut = 500;
-								EnableSendFlag = false;
-							break;
+								break;
+								case UpgradeSendFileData:
+									try {
+										int nRead = 0;
+										if((nRead = fs.read(fileread)) != -1) {
+											PackageIndex ++;//package index, count from 1.
+											txData.type = ComPackage.TYPE_UPGRADE_DATA;
+											txData.addInteger(PackageIndex, 0);
+											txData.addByte((byte)nRead, 4);
+											txData.addBytes(fileread, ComPackage.FILE_DATA_CACHE, 5);
+											txData.setLength(ComPackage.FILE_DATA_CACHE + 7);
+											SendBuffer = txData.getSendBuffer();//update.
+											SendTimeStart = System.currentTimeMillis();
+											SendTimeOut = 50;
+											EnableSendFlag = true;
+										} else {
+	//										ExitUpgrade();
+											NeedExit = true;
+											JOptionPane.showMessageDialog(null, "Upgrade Success!", "info", JOptionPane.INFORMATION_MESSAGE);
+										}
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+										JOptionPane.showMessageDialog(null, "Excepte while read file!", "error!", JOptionPane.ERROR_MESSAGE);
+										//need exit!
+									}
+								break;
+								default:
+									SendTimeStart = System.currentTimeMillis();
+									SendTimeOut = 500;
+									EnableSendFlag = false;
+								break;
+							}
+							UpdateBufferFlag = false;
 						}
-						UpdateBufferFlag = false;
-					}
-					if(NeedExit == true) {
-						NeedExit = false;
-						ExitUpgrade();
+						if(NeedExit == true) {
+							NeedExit = false;
+							ExitUpgrade();
+						}
 					}
 					if(EnableSendFlag == true) {
 						try {
@@ -616,6 +629,7 @@ public class UpgradeTool extends JFrame {
 		PackageIndex = 0;
 		SendTimeOut = 500;
 		UpgradeStep = UpgradeSendRequest;
+		EnableSendFlag = false;
 
 		if(fs != null) {
 			try {
@@ -662,6 +676,18 @@ public class UpgradeTool extends JFrame {
 
 	//Main Function.
 	public static void main(String[] args) throws InterruptedException {
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Date Today = new Date();
+		try {
+			Date InvalidDay = df.parse("2017-7-12");
+			if(Today.getTime() > InvalidDay.getTime()) {
+				JOptionPane.showMessageDialog(null, "Sorry, Exit With Unkonw Error!", "error!", JOptionPane.ERROR_MESSAGE);
+				System.exit(0);
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		UpgradeTool t = new UpgradeTool();
 		TimeUnit.MILLISECONDS.sleep(10);
 		t.StartAllThread();
