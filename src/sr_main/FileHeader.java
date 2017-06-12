@@ -44,7 +44,7 @@ public class FileHeader {
 	public byte[] toBytes() {
 		return HeaderBuf;
 	}
-	public boolean IsValid(FileHeader h) {
+	public static final boolean IsValid(FileHeader h) {
 		if(h.HeaderBuf == null)
 			return false;
 		byte[] c = new byte[5];
