@@ -12,19 +12,33 @@ public class ComPackage implements Cloneable {
 	private static final int CACHE_SIZE = FILE_DATA_CACHE + 5;
 
 	/* package type */
+	/* programmable */
+	public static final byte TYPE_ProgrammableTX = (byte)0x22;
+	public static final byte TYPE_ProgrammableACK = (byte)0x23;
+	/* action number */
+	public static final byte Program_Hover = (byte)0x00;
+	public static final byte Program_Takeoff = (byte)0x01;
+	public static final byte Program_Land = (byte)0x02;
+	public static final byte Program_Forward = (byte)0x03;
+	public static final byte Program_Backward = (byte)0x04;
+	public static final byte Program_TwLeft = (byte)0x05;
+	public static final byte Program_TwRight = (byte)0x06;
+	public static final byte Program_UpWard = (byte)0x07;
+	public static final byte Program_DownWard = (byte)0x08;
+	/* upgrade */
 	public static final byte TYPE_UPGRADE_REQUEST = (byte)0x80;
 	public static final byte TYPE_UPGRADE_DATA = (byte)0x81;
 	public static final byte TYPE_UPGRADE_FC_ACK = (byte)0x82;
 	/* firmware type */
 	public static final byte FW_TYPE_NONE = (byte)0x0;
 	public static final byte FW_TYPE_FC = (byte)0x1;
-
+	/* upgrade state */
 	public static final byte FC_STATE_READY = (byte)0x0;
 	public static final byte FC_STATE_ERASE = (byte)0x1;
 	public static final byte FC_STATE_UPGRADE = (byte)0x2;
 	public static final byte FC_STATE_REFUSED = (byte)0x3;
 	public static final byte FC_STATE_JUMPFAILED = (byte)0x4;
-
+	/* upgrade refused */
 	public static final byte FC_REFUSED_BUSY = (byte)0x0;
 	public static final byte FC_REFUSED_VERSION_OLD = (byte)0x1;
 	public static final byte FC_REFUSED_OVER_SIZE = (byte)0x2;
