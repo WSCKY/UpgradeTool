@@ -485,7 +485,9 @@ public class UpgradeTool extends JFrame {
 									//tx data
 									int DataCnt = 0;
 									int FileSize = (int)srcFile.length();
-									NumberOfPackage = ((FileSize - FileHeader.HeaderSize) / ComPackage.FILE_DATA_CACHE) + 1;
+									NumberOfPackage = ((FileSize - FileHeader.HeaderSize) / ComPackage.FILE_DATA_CACHE);
+									if((FileSize - FileHeader.HeaderSize) % ComPackage.FILE_DATA_CACHE != 0) NumberOfPackage += 1;
+
 									FileHeaderData = new byte[FileHeader.HeaderSize];
 									try {
 										fs.read(FileHeaderData);
