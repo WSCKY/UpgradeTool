@@ -58,12 +58,12 @@ import serialException.TooManyListeners;
 
 public class UpgradeTool extends JFrame {
 	/**
-	 * 
+	 * version control.
 	 */
 	private static final long serialVersionUID = 2L;
 	private static final byte Major = 1;
-	private static final byte Minor = 0;
-	private static final byte FixNumber = 1;
+	private static final byte Minor = 1;
+	private static final byte FixNumber = 0;
 
 	private static boolean UpgradeStartFlag = false;
 	private File srcFile = null;
@@ -613,6 +613,10 @@ public class UpgradeTool extends JFrame {
 						if(ret == 0)
 							ExitUpgrade();
 					}
+				} else {
+					SignalLostCnt = 0;
+					SignalLost_1s = 0;
+					GotResponseFlag = false;
 				}
 				try {
 					TimeUnit.MILLISECONDS.sleep(50);//50ms loop.
