@@ -1,4 +1,13 @@
+/*
+ * @brief  Communication package structure.
+ * @author kyChu
+ * @Date   2017/6/19
+ */
 package protocol;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 import protocol.math.CalculateCRC;
 
@@ -11,8 +20,10 @@ public class ComPackage implements Cloneable {
 	private static final char CRC_INIT = (char)0x66;
 	private static final int CACHE_SIZE = FILE_DATA_CACHE + 5;
 
-	/* package type */
-	/* programmable */
+	/* ########## package type ########## */
+	/* -------- Common communication -------- */
+	public static final byte TYPE_FC_Response = (byte)0x11;
+	/* -------- programmable -------- */
 	public static final byte TYPE_ProgrammableTX = (byte)0x22;
 	public static final byte TYPE_ProgrammableACK = (byte)0x23;
 	/* action number */
@@ -25,7 +36,9 @@ public class ComPackage implements Cloneable {
 	public static final byte Program_TwRight = (byte)0x06;
 	public static final byte Program_UpWard = (byte)0x07;
 	public static final byte Program_DownWard = (byte)0x08;
-	/* upgrade */
+	public static final byte Program_RotateLeft = (byte)0x09;
+	public static final byte Program_RotateRight = (byte)0x0A;
+	/* -------- upgrade -------- */
 	public static final byte TYPE_UPGRADE_REQUEST = (byte)0x80;
 	public static final byte TYPE_UPGRADE_DATA = (byte)0x81;
 	public static final byte TYPE_UPGRADE_FC_ACK = (byte)0x82;
@@ -85,8 +98,17 @@ public class ComPackage implements Cloneable {
 		byte[] c = new byte[]{(byte)(d >> 8), (byte)(d >> 0)};
 		addBytes(c, 2, pos);
 	}
-	public float readoutFloat(int pos) {//...
-		return 0.0f;
+	public float readoutFloat(int pos) {
+		byte[] b = {rData[pos + 3], rData[pos + 2], rData[pos + 1], rData[pos + 0]};
+		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(b));
+		float f = 0.0f;
+		try {
+			f = dis.readFloat();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return f;
 	}
 	public int readoutInteger(int pos) {
 		int c = (rData[pos] & 0xFF) | ((rData[pos + 1] << 8) & 0xFF00) | ((rData[pos + 2] << 24) >>> 8) | (rData[pos + 3] << 24);
