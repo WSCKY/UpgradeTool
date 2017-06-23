@@ -38,6 +38,9 @@ public class ComPackage implements Cloneable {
 	public static final byte Program_DownWard = (byte)0x08;
 	public static final byte Program_RotateLeft = (byte)0x09;
 	public static final byte Program_RotateRight = (byte)0x0A;
+	/* -------- version & DSN -------- */
+	public static final byte TYPE_VERSION_REQUEST = (byte)0x66;
+	public static final byte TYPE_VERSION_Response = (byte)0x67;
 	/* -------- upgrade -------- */
 	public static final byte TYPE_UPGRADE_REQUEST = (byte)0x80;
 	public static final byte TYPE_UPGRADE_DATA = (byte)0x81;
@@ -113,6 +116,15 @@ public class ComPackage implements Cloneable {
 	public int readoutInteger(int pos) {
 		int c = (rData[pos] & 0xFF) | ((rData[pos + 1] << 8) & 0xFF00) | ((rData[pos + 2] << 24) >>> 8) | (rData[pos + 3] << 24);
 		return c;
+	}
+	public char readoutCharacter(int pos) {
+		char c = (char) (rData[pos] & 0xFF | ((rData[pos + 1] << 8) & 0xFF00));
+		return c;
+	}
+	public String readoutString(int pos, int len) {
+		byte[] c = new byte[len];
+		System.arraycopy(rData, pos, c, 0, len);
+		return new String(c);
 	}
 
 	public byte[] getCRCBuffer() {
