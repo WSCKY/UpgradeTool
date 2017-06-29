@@ -1,7 +1,7 @@
 /*
  * @brief  Communication package structure.
  * @author kyChu
- * @Date   2017/6/19
+ * @Date   2017/6/29
  */
 package protocol;
 
@@ -38,6 +38,12 @@ public class ComPackage implements Cloneable {
 	public static final byte Program_DownWard = (byte)0x08;
 	public static final byte Program_RotateLeft = (byte)0x09;
 	public static final byte Program_RotateRight = (byte)0x0A;
+	/* -------- Emergency -------- */
+	public static final byte TYPE_USER_ForceCmd = (byte)0x44;
+	/* Force Command */
+	public static final byte Force_Cutoff = (byte)0x01;
+	public static final byte Force_Poweroff = (byte)0x02;
+	public static final byte Force_Land = (byte)0x03;
 	/* -------- version & DSN -------- */
 	public static final byte TYPE_VERSION_REQUEST = (byte)0x66;
 	public static final byte TYPE_VERSION_Response = (byte)0x67;
