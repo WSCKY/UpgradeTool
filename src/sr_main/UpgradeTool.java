@@ -61,7 +61,7 @@ public class UpgradeTool extends JFrame {
 	 * version control.
 	 */
 	private static final long serialVersionUID = 2L;
-	private static final byte Major = 1;
+	private static final byte Major = 2;
 	private static final byte Minor = 1;
 	private static final byte FixNumber = 0;
 
@@ -685,9 +685,9 @@ public class UpgradeTool extends JFrame {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Date Today = new Date();
 		try {
-			Date InvalidDay = df.parse("2017-7-12");
+			Date InvalidDay = df.parse("2017-7-22");
 			if(Today.getTime() > InvalidDay.getTime()) {
-				JOptionPane.showMessageDialog(null, "Sorry, Exit With Unkonw Error!", "error!", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Sorry, Exit With Unknow Error!", "error!", JOptionPane.ERROR_MESSAGE);
 				System.exit(0);
 			}
 		} catch (ParseException e) {
