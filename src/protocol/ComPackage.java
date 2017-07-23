@@ -1,7 +1,7 @@
 /*
  * @brief  Communication package structure.
  * @author kyChu
- * @Date   2017/6/29
+ * @Date   2017/7/23
  */
 package protocol;
 
@@ -38,6 +38,19 @@ public class ComPackage implements Cloneable {
 	public static final byte Program_DownWard = (byte)0x08;
 	public static final byte Program_RotateLeft = (byte)0x09;
 	public static final byte Program_RotateRight = (byte)0x0A;
+	/* -------- device check -------- */
+	public static final byte TYPE_DeviceCheckReq = (byte)0x32;
+	public static final byte TYPE_DeviceCheckAck = (byte)0x33;
+	/* device */
+	public static final byte _dev_Rev = (byte)0x0;
+	public static final byte _dev_IMU = (byte)0x1;
+	public static final byte _dev_Baro = (byte)0x2;
+	public static final byte _dev_TOF = (byte)0x3;
+	public static final byte _dev_Flow = (byte)0x4;
+	public static final byte _dev_ADC = (byte)0x5;
+	public static final byte _dev_ESC = (byte)0x6;
+	public static final byte _dev_MTD = (byte)0x7;
+	public static final byte _dev_LED = (byte)0x8;
 	/* -------- Emergency -------- */
 	public static final byte TYPE_USER_ForceCmd = (byte)0x44;
 	/* Force Command */
@@ -66,7 +79,17 @@ public class ComPackage implements Cloneable {
 	public static final byte FC_REFUSED_OVER_SIZE = (byte)0x2;
 	public static final byte FC_REFUSED_TYPE_ERROR = (byte)0x3;
 	public static final byte FC_REFUSED_LOW_VOLTAGE = (byte)0x4;
-	public static final byte FC_REFUSED_UNKNOWERROR = (byte)0x5;
+	public static final byte FC_REFUSED_FW_TYPE_ERROR = (byte)0x5;
+	public static final byte FC_REFUSED_UNKNOWERROR = (byte)0x6;
+	public static final byte FC_REFUSED_NO_ERROR = (byte)0xF;
+	/* -------- Factory Test -------- */
+	public static final byte TYPE_DSN_UPDATE = (byte)0xA0;
+	public static final byte TYPE_ADC_CALIBRATE = (byte)0xA1;
+	public static final byte TYPE_ADC_CALIB_ACK = (byte)0xA2;
+	public static final byte TYPE_ESC_BURN_IN_TEST = (byte)0xA3;
+	/* ADC calibrate command */
+	public static final byte ADC_CALIBRATE_H = (byte)0x33;
+	public static final byte ADC_CALIBRATE_L = (byte)0x44;
 
 	public byte stx1;
 	public byte stx2;
