@@ -332,6 +332,10 @@ public class UpgradeTool extends JFrame {
 												case ComPackage.FC_STATE_UPGRADE:
 													ErrorShownFlag = false;
 													RefusedShownFlag = false;
+													/* state must be updated before "UpdateBufferFlag = true;" */
+													if(UpgradeStep == UpgradeSendRequest) {
+														UpgradeStep = UpgradeSendFileData;
+													}
 													int rdID = rxData.readoutInteger(1);
 													if(rdID == PackageIndex) {//dangerous
 														UpdateBufferFlag = true;
@@ -341,9 +345,6 @@ public class UpgradeTool extends JFrame {
 															txProg.setValue(progress);
 															txProg.setString("Upgrading...   " + progress + "%");
 														}
-													}
-													if(UpgradeStep == UpgradeSendRequest) {
-														UpgradeStep = UpgradeSendFileData;
 													}
 //													TimeMes_M = System.currentTimeMillis();
 												break;
