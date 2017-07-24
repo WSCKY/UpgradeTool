@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.prefs.Preferences;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -226,11 +227,21 @@ public class UpgradeTool extends JFrame {
 			FileChoose = new JFileChooser();
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("pnx file(*.pnx)", "pnx");
 			FileChoose.setFileFilter(filter);
-			FileChoose.setCurrentDirectory(fsv.getHomeDirectory());
+			Preferences pref = Preferences.userRoot().node(this.getClass().getName());
+			String lastPath = pref.get("lastPath", "");//get it from System registry.
+			if(!lastPath.equals("")) {
+				File LastFilePath = new File(lastPath);
+				if(LastFilePath.exists())
+					FileChoose.setCurrentDirectory(new File(lastPath));
+				else
+					FileChoose.setCurrentDirectory(fsv.getHomeDirectory());
+			} else
+				FileChoose.setCurrentDirectory(fsv.getHomeDirectory());
 //			FileChoose.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			int ret = FileChoose.showDialog(null, "Choose");
 			if(ret == JFileChooser.APPROVE_OPTION ) {
 				File file = FileChoose.getSelectedFile();
+				pref.put("lastPath", file.getParent()); //Save it to System registry.
 				String prefix = file.getName().substring(file.getName().lastIndexOf("."));
 				if(prefix.equals(".pnx")) {
 					if(FileNameRegular.IsValidName(file.getName(), ".pnx")) {
