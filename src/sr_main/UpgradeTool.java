@@ -9,6 +9,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -138,6 +146,7 @@ public class UpgradeTool extends JFrame {
 				src_txt.setEditable(false);
 				src_txt.setToolTipText("file path");
 				add(src_txt);
+				new DropTarget(src_txt, DnDConstants.ACTION_COPY_OR_MOVE, txtl, true);
 	
 				OpenFileBtn.setBounds(583, 50, 42, 32);
 				OpenFileBtn.setPreferredSize(new Dimension(42, 32));
@@ -254,6 +263,54 @@ public class UpgradeTool extends JFrame {
 				} else {
 					JOptionPane.showMessageDialog(null, "file type error!", "error!", JOptionPane.ERROR_MESSAGE);
 				}
+			}
+		}
+	};
+
+	private DropTargetListener txtl = new DropTargetListener() {
+		public void dragEnter(DropTargetDragEvent dtde) {}
+		public void dragOver(DropTargetDragEvent dtde) {}
+		public void dropActionChanged(DropTargetDragEvent dtde) {}
+		public void dragExit(DropTargetEvent dte) {}
+
+		@Override
+		public void drop(DropTargetDropEvent dtde) {
+			// TODO Auto-generated method stub
+			try {
+				if(dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+					dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);// important!
+					@SuppressWarnings("unchecked")
+					/* attention: should "import java.util.List;" (not awt.List) */
+					List<File> list = (List<File>)(dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor));
+					for(File file : list) {
+						if(file.isFile()) {
+							String prefix = file.getName().substring(file.getName().lastIndexOf("."));
+//							System.out.println(prefix);
+							if(prefix.equals(".pnx")) {
+								if(FileNameRegular.IsValidName(file.getName(), ".pnx")) {
+//									System.out.println(file.getPath());
+									srcFile = file;
+									src_txt.setText(srcFile.getPath());
+									debug_info.setText("file size: " + srcFile.length() + " Bytes.");
+									break;
+								} else {
+									JOptionPane.showMessageDialog(null, "file name error!", "error!", JOptionPane.ERROR_MESSAGE);
+								}
+							} else {
+								JOptionPane.showMessageDialog(null, "file type error!", "error!", JOptionPane.ERROR_MESSAGE);
+							}
+						}
+					}
+					dtde.dropComplete(true);
+				} else {
+					dtde.rejectDrop();
+				}
+			} catch (UnsupportedFlavorException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	};
