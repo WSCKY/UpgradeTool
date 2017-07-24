@@ -369,6 +369,9 @@ public class UpgradeTool extends JFrame {
 																case ComPackage.FC_REFUSED_LOW_VOLTAGE:
 																	JOptionPane.showMessageDialog(null, "low voltage.", "fc refused!", JOptionPane.ERROR_MESSAGE);
 																break;
+																case ComPackage.FC_REFUSED_FW_TYPE_ERROR:
+																	JOptionPane.showMessageDialog(null, "fw type error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																break;
 																case ComPackage.FC_REFUSED_UNKNOWERROR:
 																default:
 																	JOptionPane.showMessageDialog(null, "fc unkonw error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
