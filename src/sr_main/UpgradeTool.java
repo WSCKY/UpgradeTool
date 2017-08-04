@@ -71,7 +71,7 @@ public class UpgradeTool extends JFrame {
 	 */
 	private static final long serialVersionUID = 2L;
 	private static final byte Major = 2;
-	private static final byte Minor = 1;
+	private static final byte Minor = 2;
 	private static final byte FixNumber = 0;
 
 	private static boolean UpgradeStartFlag = false;
@@ -88,12 +88,16 @@ public class UpgradeTool extends JFrame {
 	private JComboBox<String> srSelect = new JComboBox<String>();
 	private JComboBox<String> srBaudSet = new JComboBox<String>();
 	private JLabel debug_info = new JLabel("ready.");
-	private JButton OpenPortBtn = new JButton("Open");
+//	private JButton OpenPortBtn = new JButton("Open");
+	private JButton OpenPortBtn = new JButton("打开");
 	private JButton OpenFileBtn = new JButton(" ... ");
-	private JButton UpgButton = new JButton("Upgrade");
-	private JLabel src_lab = new JLabel("src:");
+//	private JButton UpgButton = new JButton("Upgrade");
+	private JButton UpgButton = new JButton("开始");
+//	private JLabel src_lab = new JLabel("src:");
+	private JLabel src_lab = new JLabel("文件:");
 	private JTextField src_txt = new JTextField(35);
-	private JLabel Prog_lab = new JLabel("sta:");
+//	private JLabel Prog_lab = new JLabel("sta:");
+	private JLabel Prog_lab = new JLabel("状态:");
 	private JProgressBar txProg = new JProgressBar(0, 100);
 
 	private JFileChooser FileChoose = null;
@@ -117,7 +121,8 @@ public class UpgradeTool extends JFrame {
 				add(srBaudSet);
 
 				OpenPortBtn.setBounds(210, 5, 90, 30);
-				OpenPortBtn.setFont(new Font("Courier New", Font.BOLD, 18));
+//				OpenPortBtn.setFont(new Font("Courier New", Font.BOLD, 18));
+				OpenPortBtn.setFont(new Font("宋体", Font.BOLD, 18));
 				OpenPortBtn.addActionListener(sbl);
 				OpenPortBtn.setToolTipText("open com port");
 				add(OpenPortBtn);
@@ -136,18 +141,20 @@ public class UpgradeTool extends JFrame {
 				hPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 40, 647, new Color(233, 80, 80, 160)));
 				add(hPanel);
 
-				src_lab.setBounds(10, 55, 58, 22);
+				src_lab.setBounds(10, 55, 68, 22);
 //				src_lab.setBorder(BorderFactory.createLineBorder(Color.RED));
-				src_lab.setFont(new Font("Courier New", Font.BOLD, 24));
+//				src_lab.setFont(new Font("Courier New", Font.BOLD, 24));
+				src_lab.setFont(new Font("宋体", Font.BOLD, 24));
 				add(src_lab);
-				
-				src_txt.setBounds(68, 50, 500, 32);
-				src_txt.setFont(new Font("Courier New", Font.BOLD, 24));
+
+				src_txt.setBounds(78, 50, 500, 32);
+//				src_txt.setFont(new Font("Courier New", Font.BOLD, 24));
+				src_txt.setFont(new Font("宋体", Font.BOLD, 24));
 				src_txt.setEditable(false);
 				src_txt.setToolTipText("file path");
 				add(src_txt);
 				new DropTarget(src_txt, DnDConstants.ACTION_COPY_OR_MOVE, txtl, true);
-	
+
 				OpenFileBtn.setBounds(583, 50, 42, 32);
 				OpenFileBtn.setPreferredSize(new Dimension(42, 32));
 				OpenFileBtn.setFont(new Font("Courier New", Font.BOLD, 18));
@@ -155,20 +162,23 @@ public class UpgradeTool extends JFrame {
 				OpenFileBtn.setToolTipText("choose file");
 				add(OpenFileBtn);
 
-				Prog_lab.setBounds(25, 102, 58, 22);
-				Prog_lab.setFont(new Font("Courier New", Font.BOLD, 24));
+				Prog_lab.setBounds(10, 102, 68, 22);
+//				Prog_lab.setFont(new Font("Courier New", Font.BOLD, 24));
+				Prog_lab.setFont(new Font("宋体", Font.BOLD, 24));
 //				Prog_lab.setBorder(BorderFactory.createLineBorder(Color.RED));
 				add(Prog_lab);
 
-				txProg.setBounds(88, 97, 500, 32);
+				txProg.setBounds(78, 97, 500, 32);
 				txProg.setValue(0);
 				txProg.setStringPainted(true);
 				txProg.setFont(txProg.getFont().deriveFont(Font.ITALIC | Font.BOLD, 16));
-				txProg.setToolTipText("upgrade state");
+//				txProg.setToolTipText("upgrade state");
+				txProg.setToolTipText("升级状态");
 				add(txProg);
 
 				UpgButton.setBounds(218, 144, 200, 40);
-				UpgButton.setFont(new Font("Courier New", Font.BOLD, 24));
+//				UpgButton.setFont(new Font("Courier New", Font.BOLD, 24));
+				UpgButton.setFont(new Font("宋体", Font.BOLD, 24));
 				UpgButton.addActionListener(ubl);
 				UpgButton.setToolTipText("upgrade");
 				add(UpgButton);
@@ -179,7 +189,8 @@ public class UpgradeTool extends JFrame {
 				setIconImage(tool.getImage(UpgradeTool.class.getResource("upp.png")));
 				setResizable(false);
 
-				setTitle("kyChu.UpgradeTool V" + Major + "." + Minor + "." + FixNumber);
+//				setTitle("kyChu.UpgradeTool V" + Major + "." + Minor + "." + FixNumber);
+				setTitle("F1/2飞控固件烧写工具(kyChu@2017/8/4)  V" + Major + "." + Minor + "." + FixNumber);
 				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				addWindowListener(wl);
 				setSize(652, 222);
@@ -192,7 +203,7 @@ public class UpgradeTool extends JFrame {
 	private ActionListener sbl = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			String name = ((JButton)e.getSource()).getText();
-			if(name.equals("Open")) {
+			if(name.equals("打开")) {//Open
 				String srName = (String) srSelect.getSelectedItem();
 				String srBaud = (String) srBaudSet.getSelectedItem();
 				if(srName == null || srName.equals("")) { // check serial port
@@ -206,7 +217,7 @@ public class UpgradeTool extends JFrame {
 						try {
 							serialPort = SerialTool.openPort(srName, bps);
 							SerialTool.addListener(serialPort, new SerialListener());
-							((JButton)e.getSource()).setText("Close");
+							((JButton)e.getSource()).setText("关闭");//Close
 							srSelect.setEnabled(false);
 							srBaudSet.setEnabled(false);
 							debug_info.setText(srName + " opened.");
@@ -216,14 +227,14 @@ public class UpgradeTool extends JFrame {
 						}
 					}
 				}
-			} else if(name.equals("Close")) {
+			} else if(name.equals("关闭")) {//Close
 				SerialTool.closePort(serialPort);
 
 				serialPort = null;
 				srSelect.setEnabled(true);
 				srBaudSet.setEnabled(true);
 				ExitUpgrade();
-				((JButton)e.getSource()).setText("Open");
+				((JButton)e.getSource()).setText("打开");//Open
 				debug_info.setText(srSelect.getSelectedItem() + " closed.");
 				hPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 40, 647, new Color(233, 80, 80, 160)));
 			}
@@ -294,10 +305,12 @@ public class UpgradeTool extends JFrame {
 									debug_info.setText("file size: " + srcFile.length() + " Bytes.");
 									break;
 								} else {
-									JOptionPane.showMessageDialog(null, "file name error!", "error!", JOptionPane.ERROR_MESSAGE);
+//									JOptionPane.showMessageDialog(null, "file name error!", "error!", JOptionPane.ERROR_MESSAGE);
+									JOptionPane.showMessageDialog(null, "文件名错误！", "出错！", JOptionPane.ERROR_MESSAGE);
 								}
 							} else {
-								JOptionPane.showMessageDialog(null, "file type error!", "error!", JOptionPane.ERROR_MESSAGE);
+//								JOptionPane.showMessageDialog(null, "file type error!", "error!", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(null, "文件类型错误！", "出错！", JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					}
@@ -333,10 +346,12 @@ public class UpgradeTool extends JFrame {
 					debug_info.setText("upgrade start.");
 					UpgradeStartFlag = true; /* Start upgrade. */
 				} else {
-					JOptionPane.showMessageDialog(null, "select file first!", "error!", JOptionPane.ERROR_MESSAGE);
+//					JOptionPane.showMessageDialog(null, "select file first!", "error!", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "请先打开文件！", "出错！", JOptionPane.ERROR_MESSAGE);
 				}
 			} else {
-				JOptionPane.showMessageDialog(null, "open the port first!", "error!", JOptionPane.ERROR_MESSAGE);
+//				JOptionPane.showMessageDialog(null, "open the port first!", "error!", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "请先打开端口！", "出错！", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	};
@@ -348,7 +363,8 @@ public class UpgradeTool extends JFrame {
 	        switch (serialPortEvent.getEventType()) {
 	            case SerialPortEvent.BI: // 10 通讯中断
 	            	ExitUpgrade();
-	            	JOptionPane.showMessageDialog(null, "communication interrupted!", "error!", JOptionPane.ERROR_MESSAGE);
+//	            	JOptionPane.showMessageDialog(null, "communication interrupted!", "error!", JOptionPane.ERROR_MESSAGE);
+//	            	JOptionPane.showMessageDialog(null, "通讯被中断！", "出错！", JOptionPane.ERROR_MESSAGE);
 	            break;
 	            case SerialPortEvent.OE: // 7 溢位（溢出）错误
 	            case SerialPortEvent.FE: // 9 帧错误
@@ -364,12 +380,14 @@ public class UpgradeTool extends JFrame {
 					byte[] data = null;
 					try {
 						if (serialPort == null) {
-							JOptionPane.showMessageDialog(null, "serial port = null", "error!", JOptionPane.ERROR_MESSAGE);
+//							JOptionPane.showMessageDialog(null, "serial port = null", "error!", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, "端口为空！", "出错！", JOptionPane.ERROR_MESSAGE);
 						}
 						else {
 							data = SerialTool.readFromPort(serialPort);//read data from port.
 							if (data == null || data.length < 1) {//check data.
-								JOptionPane.showMessageDialog(null, "no valid data!", "error!", JOptionPane.ERROR_MESSAGE);
+//								JOptionPane.showMessageDialog(null, "no valid data!", "error!", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(null, "未收到有效数据！", "出错！", JOptionPane.ERROR_MESSAGE);
 								System.exit(0);
 							}
 							else {
@@ -394,7 +412,7 @@ public class UpgradeTool extends JFrame {
 													if(UpgradeStep == UpgradeSendRequest) {
 														debug_info.setText("Erasing flash.");
 														txProg.setValue(rxData.rData[1]);
-														txProg.setString("Erasing...   " + rxData.rData[1] + "%");
+														txProg.setString("擦除中...   " + rxData.rData[1] + "%");//Erasing
 													}
 												break;
 												case ComPackage.FC_STATE_UPGRADE:
@@ -411,7 +429,7 @@ public class UpgradeTool extends JFrame {
 														if(NumberOfPackage != 0) {
 															int progress = ((rdID * 100) / NumberOfPackage);
 															txProg.setValue(progress);
-															txProg.setString("Upgrading...   " + progress + "%");
+															txProg.setString("升级中...   " + progress + "%");//Upgrading
 														}
 													}
 //													TimeMes_M = System.currentTimeMillis();
@@ -423,26 +441,33 @@ public class UpgradeTool extends JFrame {
 															RefusedShownFlag = true;
 															switch(rxData.rData[1]) {
 																case ComPackage.FC_REFUSED_BUSY:
-																	JOptionPane.showMessageDialog(null, "fc busy.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+//																	JOptionPane.showMessageDialog(null, "fc busy.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																	JOptionPane.showMessageDialog(null, "主控繁忙.", "拒绝升级！", JOptionPane.ERROR_MESSAGE);
 																break;
 																case ComPackage.FC_REFUSED_VERSION_OLD:
-																	JOptionPane.showMessageDialog(null, "version too old.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+//																	JOptionPane.showMessageDialog(null, "version too old.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																	JOptionPane.showMessageDialog(null, "版本过旧.", "拒绝升级！", JOptionPane.ERROR_MESSAGE);
 																break;
 																case ComPackage.FC_REFUSED_OVER_SIZE:
-																	JOptionPane.showMessageDialog(null, "over size.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+//																	JOptionPane.showMessageDialog(null, "over size.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																	JOptionPane.showMessageDialog(null, "文件过大.", "拒绝升级！", JOptionPane.ERROR_MESSAGE);
 																break;
 																case ComPackage.FC_REFUSED_TYPE_ERROR:
-																	JOptionPane.showMessageDialog(null, "type error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+//																	JOptionPane.showMessageDialog(null, "type error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																	JOptionPane.showMessageDialog(null, "机型错误.", "拒绝升级！", JOptionPane.ERROR_MESSAGE);
 																break;
 																case ComPackage.FC_REFUSED_LOW_VOLTAGE:
-																	JOptionPane.showMessageDialog(null, "low voltage.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+//																	JOptionPane.showMessageDialog(null, "low voltage.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																	JOptionPane.showMessageDialog(null, "电压过低.", "拒绝升级！", JOptionPane.ERROR_MESSAGE);
 																break;
 																case ComPackage.FC_REFUSED_FW_TYPE_ERROR:
-																	JOptionPane.showMessageDialog(null, "fw type error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+//																	JOptionPane.showMessageDialog(null, "fw type error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																	JOptionPane.showMessageDialog(null, "固件错误.", "拒绝升级！", JOptionPane.ERROR_MESSAGE);
 																break;
 																case ComPackage.FC_REFUSED_UNKNOWERROR:
 																default:
-																	JOptionPane.showMessageDialog(null, "fc unkonw error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+//																	JOptionPane.showMessageDialog(null, "fc unkonw error.", "fc refused!", JOptionPane.ERROR_MESSAGE);
+																	JOptionPane.showMessageDialog(null, "未知错误.", "拒绝升级！", JOptionPane.ERROR_MESSAGE);
 																break;
 															}
 														}
@@ -451,7 +476,8 @@ public class UpgradeTool extends JFrame {
 												case ComPackage.FC_STATE_JUMPFAILED:
 													if(ErrorShownFlag == false) {
 														ErrorShownFlag = true;
-														JOptionPane.showMessageDialog(null, "fc jump to application failed!", "fc error!", JOptionPane.ERROR_MESSAGE);
+//														JOptionPane.showMessageDialog(null, "fc jump to application failed!", "fc error!", JOptionPane.ERROR_MESSAGE);
+														JOptionPane.showMessageDialog(null, "跳转失败.", "飞控异常！", JOptionPane.ERROR_MESSAGE);
 													}
 												break;
 												default:
@@ -585,7 +611,8 @@ public class UpgradeTool extends JFrame {
 										NeedExit = true;
 										srcFile = null;
 										src_txt.setText("");
-										JOptionPane.showMessageDialog(null, "invalid pnx file!", "error!", JOptionPane.ERROR_MESSAGE);
+//										JOptionPane.showMessageDialog(null, "invalid pnx file!", "error!", JOptionPane.ERROR_MESSAGE);
+										JOptionPane.showMessageDialog(null, "无效的飞控固件！", "error!", JOptionPane.ERROR_MESSAGE);
 									}
 								break;
 								case UpgradeSendFileData:
@@ -605,7 +632,8 @@ public class UpgradeTool extends JFrame {
 										} else {
 	//										ExitUpgrade();
 											NeedExit = true;
-											JOptionPane.showMessageDialog(null, "Upgrade Success!", "info", JOptionPane.INFORMATION_MESSAGE);
+//											JOptionPane.showMessageDialog(null, "Upgrade Success!", "info", JOptionPane.INFORMATION_MESSAGE);
+											JOptionPane.showMessageDialog(null, "升级完成！", "提示", JOptionPane.INFORMATION_MESSAGE);
 										}
 									} catch (IOException e) {
 										// TODO Auto-generated catch block
@@ -677,9 +705,12 @@ public class UpgradeTool extends JFrame {
 					}
 					if(SignalLost_1s >= 10) {
 						SignalLost_1s = 0;
-						Object[] options = {"EXIT", "WAIT"}; 
-						int ret = JOptionPane.showOptionDialog(null, "no response from fc!\nexit?", "warning", JOptionPane.DEFAULT_OPTION, 
-						JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+//						Object[] options = {"EXIT", "WAIT"};
+						Object[] options = {"退出", "等待"}; 
+//						int ret = JOptionPane.showOptionDialog(null, "no response from fc!\nexit?", "warning", JOptionPane.DEFAULT_OPTION, 
+//						JOptionPane.WARNING_MESSAGE,null, options, options[0]);
+						int ret = JOptionPane.showOptionDialog(null, "飞控无响应！\n是否退出？", "警告", JOptionPane.DEFAULT_OPTION, 
+								JOptionPane.WARNING_MESSAGE,null, options, options[0]);
 						if(ret == -1)
 							ret = 0;
 						if(ret == 0)
