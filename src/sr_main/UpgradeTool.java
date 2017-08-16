@@ -46,6 +46,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
@@ -72,7 +74,7 @@ public class UpgradeTool extends JFrame {
 	private static final long serialVersionUID = 2L;
 	private static final byte Major = 2;
 	private static final byte Minor = 2;
-	private static final byte FixNumber = 0;
+	private static final byte FixNumber = 2;
 
 	private static boolean UpgradeStartFlag = false;
 	private File srcFile = null;
@@ -190,7 +192,7 @@ public class UpgradeTool extends JFrame {
 				setResizable(false);
 
 //				setTitle("kyChu.UpgradeTool V" + Major + "." + Minor + "." + FixNumber);
-				setTitle("F1/2·É¿Ø¹Ì¼þÉÕÐ´¹¤¾ß(kyChu@2017/8/4)  V" + Major + "." + Minor + "." + FixNumber);
+				setTitle("F1/2·É¿Ø¹Ì¼þÉÕÐ´¹¤¾ß  V" + Major + "." + Minor + "." + FixNumber);
 				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				addWindowListener(wl);
 				setSize(652, 222);
@@ -790,11 +792,18 @@ public class UpgradeTool extends JFrame {
 		try {
 			Date InvalidDay = df.parse("2018-6-1");
 			if(Today.getTime() > InvalidDay.getTime()) {
-				JOptionPane.showMessageDialog(null, "Sorry, Exit With Unknow Error!", "error!", JOptionPane.ERROR_MESSAGE);
+				System.err.println("System error.");
+//				JOptionPane.showMessageDialog(null, "Sorry, Exit With Unknow Error!", "error!", JOptionPane.ERROR_MESSAGE);
 				System.exit(0);
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
 		UpgradeTool t = new UpgradeTool();
