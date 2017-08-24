@@ -1,3 +1,8 @@
+/**
+ * @brief  Received data decoder.
+ * @author kyChu
+ * @Date   2017/8/22
+ */
 package protocol;
 
 import protocol.math.CalculateCRC;
@@ -55,7 +60,8 @@ public class RxAnalyse {
 			break;
 			case DECODE_STATE_GOT_LEN:
 				rPacket.type = data;
-				_rxlen ++;
+//				_rxlen ++;
+				_rxlen = 1;
 				_decode_state = DECODE_STATE.DECODE_STATE_GOT_TYPE;
 			break;
 			case DECODE_STATE_GOT_TYPE:
@@ -63,6 +69,9 @@ public class RxAnalyse {
 				_rxlen ++;
 				if(_rxlen == rPacket.length - 1) {
 					_decode_state = DECODE_STATE.DECODE_STATE_GOT_DATA;
+				}
+				if(_rxlen > rPacket.rData.length) {
+					_decode_state = DECODE_STATE.DECODE_STATE_UNSYNCED;
 				}
 			break;
 			case DECODE_STATE_GOT_DATA:
